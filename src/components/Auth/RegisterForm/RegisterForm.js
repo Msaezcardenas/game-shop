@@ -1,14 +1,26 @@
 import { Form } from 'semantic-ui-react';
 import { useFormik } from 'formik';
+import { Auth } from '@/api';
+import { useRouter } from 'next/router';
 import { initialValues, validationSchema } from './RegisterForm.form';
 
+const authCtrl = new Auth();
+
 export function RegisterForm() {
+  const router = useRouter();
+
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
-    onSubmit: () => {
-      console.log('formulario enviado');
+    onSubmit: async (formValue) => {
+      try {
+        await authCtrl.register(formValue);
+        router.push('/join/sign-in');
+        console.log('TODO OK');
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 
